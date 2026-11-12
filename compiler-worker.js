@@ -1,25 +1,37 @@
 
-import solc from "https://esm.sh/solc@0.8.27?bundle";
+import soljson from "https://cdn.jsdelivr.net/npm/solc@0.8.27/soljson.js/+esm";
+import wrapper from "https://cdn.jsdelivr.net/npm/solc@0.8.27/wrapper/+esm";
+
+let compiler;
+
+try {
+  compiler = wrapper(soljson);
+} catch (error) {
+  self.postMessage({
+    ok: false,
+    error: "Solidity compiler initialization failed: " +
+      (error.message || String(error))
+  });
+}
 
 self.onmessage = (event) => {
   try {
-    const source = event.data.source;
+    if (!compiler) {
+      throw new Error("Compiler is not initialized.");
+    }
 
     const input = {
       language: "Solidity",
-
       sources: {
         "DABELA.sol": {
-          content: source
+          content: event.data.source
         }
       },
-
       settings: {
         optimizer: {
           enabled: true,
           runs: 200
         },
-
         outputSelection: {
           "*": {
             "*": [
@@ -31,47 +43,34 @@ self.onmessage = (event) => {
       }
     };
 
-    const raw = solc.compile(JSON.stringify(input));
-    const output = JSON.parse(raw);
+    const output = JSON.parse(
+      compiler.compile(JSON.stringify(input))
+    );
 
     const errors = (output.errors || []).filter(
-      e => e.severity === "error"
+      error => error.severity === "error"
     );
 
     if (errors.length) {
-      self.postMessage({
-        ok: false,
-        error: errors
-          .map(e => e.formattedMessage)
-          .join("\n")
-      });
-
-      return;
+      throw new Error(
+        errors.map(error => error.formattedMessage).join("\n")
+      );
     }
 
     const contract =
-      output.contracts?.["DABELA.sol"]?.DABELA;
-
-    if (!contract?.evm?.bytecode?.object) {
-      self.postMessage({
-        ok: false,
-        error: "Compiler returned no deployment bytecode."
-      });
-
-      return;
-    }
+      output.contracts["DABELA.sol"]["DABELA"];
 
     self.postMessage({
       ok: true,
       abi: contract.abi,
       bytecode: "0x" + contract.evm.bytecode.object,
-      version: solc.version()
+      version: compiler.version()
     });
 
-  } catch (err) {
+  } catch (error) {
     self.postMessage({
       ok: false,
-      error: err?.message || String(err)
+      error: error.message || String(error)
     });
   }
 };
