@@ -4,18 +4,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101522">
 <title>DABELA Deployer</title>
 <style>
 :root {
   color-scheme: dark;
-  --bg: #0b1020;
-  --panel: #151d30;
-  --line: #293650;
-  --text: #edf2ff;
-  --muted: #9ba9c2;
+  --bg: #0b0d12;
+  --panel: #151923;
+  --line: #293142;
+  --text: #f4f6fb;
+  --muted: #9ba6b8;
   --accent: #7ea8fc;
-  --good: #65d6a3;
+  --good: #67d6a3;
   --bad: #ff8585;
 }
 * { box-sizing: border-box; }
@@ -23,205 +22,147 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: 16px/1.5 system-ui, sans-serif;
-  padding: 24px 16px 48px;
+  font: 15px system-ui, -apple-system, Segoe UI, sans-serif;
+  padding: 22px 16px 40px;
 }
 main { max-width: 620px; margin: auto; }
-.brand {
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .16em;
-}
-h1 { font-size: 32px; margin: 8px 0; }
-.sub { color: var(--muted); margin-bottom: 24px; }
-.card {
+h1 { font-size: 27px; margin: 8px 0 4px; }
+p { color: var(--muted); line-height: 1.55; }
+.panel {
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 18px;
-  margin: 14px 0;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-}
-.pill {
-  font-size: 12px;
-  padding: 5px 9px;
-  border-radius: 99px;
-  background: #263650;
-  color: #c9d9ff;
-}
-label {
-  display: block;
-  color: var(--muted);
-  font-size: 13px;
-  margin: 14px 0 6px;
-}
-input {
-  width: 100%;
-  background: #0d1424;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 13px;
-  color: var(--text);
-  font: inherit;
+  margin: 16px 0;
 }
 button {
   width: 100%;
   border: 0;
   border-radius: 12px;
   padding: 14px 16px;
-  margin-top: 14px;
-  background: var(--accent);
-  color: #081326;
+  font-weight: 700;
   font-size: 15px;
-  font-weight: 750;
+  background: var(--accent);
+  color: #08101e;
+  margin-top: 10px;
 }
 button:disabled { opacity: .45; }
-.secondary { background: #25334d; color: var(--text); }
-.small {
-  font-size: 12px;
-  color: var(--muted);
-  overflow-wrap: anywhere;
+input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0d1119;
+  color: var(--text);
+  font: 14px monospace;
+  margin-top: 7px;
+}
+label {
+  display: block;
+  font-weight: 650;
+  margin-top: 14px;
 }
 .status {
-  white-space: pre-wrap;
   font-size: 13px;
+  padding: 11px;
+  border-radius: 10px;
+  background: #0d1119;
   color: var(--muted);
+  overflow-wrap: anywhere;
   margin-top: 12px;
+  white-space: pre-wrap;
 }
 .good { color: var(--good); }
 .bad { color: var(--bad); }
-.warning {
-  border-left: 3px solid #e4b45d;
-  padding-left: 12px;
-  color: #e9d6ad;
-  font-size: 13px;
-}
+small { color: var(--muted); }
 a { color: var(--accent); overflow-wrap: anywhere; }
 </style>
 </head>
 
 <body>
 <main>
-  <div class="brand">KIROBYTE · SMART CONTRACT TOOLS</div>
-  <h1>DABELA Deployer</h1>
-  <p class="sub">
-    Deploy your fixed-supply DAB token to Ethereum Sepolia.
+
+<h1>DABELA Deployer</h1>
+<p>
+  Deploy the fixed-supply DABELA (DAB) ERC-20 token
+  to Ethereum Sepolia.
+</p>
+
+<section class="panel">
+  <b>1. Wallet</b>
+
+  <div id="walletStatus" class="status">
+    Not connected
+  </div>
+
+  <button id="connectBtn">Connect MetaMask</button>
+  <button id="switchBtn">Switch to Sepolia</button>
+</section>
+
+<section class="panel">
+  <b>2. Deployment</b>
+
+  <p>
+    Initial supply: <b>1,000,000,000 DAB</b><br>
+    Decimals: <b>18</b><br>
+    Minting: <b>Fixed supply; no further mint function</b>
   </p>
 
-  <section class="card">
-    <div class="row">
-      <strong>Deployment network</strong>
-      <span class="pill">Ethereum Sepolia</span>
-    </div>
-    <p class="small">Chain ID: 11155111 · Currency: Sepolia ETH</p>
-    <div class="row">
-      <span class="small">Token</span>
-      <strong>DABELA (DAB)</strong>
-    </div>
-    <div class="row">
-      <span class="small">Initial supply</span>
-      <strong>1,000,000,000</strong>
-    </div>
-    <div class="row">
-      <span class="small">Decimals</span>
-      <strong>18</strong>
-    </div>
-  </section>
+  <label for="recipient">Initial token recipient</label>
 
-  <section class="card">
-    <div class="row">
-      <strong>1. Connect wallet</strong>
-      <span id="walletState" class="pill">Not connected</span>
-    </div>
-    <button id="connect">Connect MetaMask</button>
-    <p id="walletAddress" class="small">No wallet connected.</p>
-    <button id="switch" class="secondary" disabled>
-      Switch to Ethereum Sepolia
-    </button>
-  </section>
+  <input
+    id="recipient"
+    placeholder="Connect wallet to fill this address"
+    autocomplete="off"
+    spellcheck="false"
+  >
 
-  <section class="card">
-    <strong>2. Deploy DABELA</strong>
-    <label for="recipient">Initial token recipient</label>
-    <input
-      id="recipient"
-      placeholder="0x… your public wallet address"
-      autocomplete="off"
-      spellcheck="false"
-    >
-    <p class="small">
-      All 1 billion DAB tokens will be minted to this address
-      at deployment. It defaults to your connected wallet.
-    </p>
-    <button id="deploy" disabled>
-      Compile and deploy DABELA
-    </button>
-    <div id="status" class="status">
-      Connect MetaMask to begin.
-    </div>
-  </section>
+  <button id="deployBtn" disabled>
+    Compile and deploy
+  </button>
 
-  <section class="card">
-    <strong>Important contract details</strong>
-    <p class="warning">
-      This deployer uses a self-contained, fixed-supply ERC-20
-      contract. It has no owner, no additional mint function,
-      and no ERC-20 Permit extension. Standard transfers and
-      approvals are supported. This is a testnet deployment
-      tool, not an audit.
-    </p>
-    <p class="small">
-      Never enter your Secret Recovery Phrase or private key.
-      MetaMask should request approval for the deployment
-      transaction itself.
-    </p>
-  </section>
+  <div id="status" class="status">
+    Connect your wallet to begin.
+  </div>
+
+  <div id="result" class="status" hidden></div>
+</section>
+
+<p>
+  <small>
+    Network: Ethereum Sepolia (chain ID 11155111).
+    This page never asks for your recovery phrase or private key.
+    Review the transaction details in MetaMask before confirming.
+  </small>
+</p>
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/solc@0.8.27/solc.min.js"></script>
+<script type="module">
+import { ethers } from
+"https://cdn.jsdelivr.net/npm/ethers@6.13.5/+esm";
 
-<script>
-const CHAIN_ID = "0xaa36a7";
+const SEPOLIA = 11155111n;
 
-const source = `
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+const source = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
 
 contract DABELA {
-    string public constant name = "DABELA";
-    string public constant symbol = "DAB";
-    uint8 public constant decimals = 18;
-
+    string public name = "DABELA";
+    string public symbol = "DAB";
+    uint8 public decimals = 18;
     uint256 public totalSupply;
 
     mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256))
-        public allowance;
+    mapping(address => mapping(address => uint256)) public allowance;
 
-    event Transfer(
-        address indexed from,
-        address indexed to,
-        uint256 value
-    );
-
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 
     constructor(address recipient) {
         require(recipient != address(0), "Invalid recipient");
 
-        uint256 supply =
-            1_000_000_000 * 10 ** uint256(decimals);
+        uint256 supply = 1_000_000_000 * 10 ** uint256(decimals);
 
         totalSupply = supply;
         balanceOf[recipient] = supply;
@@ -233,15 +174,9 @@ contract DABELA {
         external returns (bool)
     {
         require(to != address(0), "Invalid recipient");
-        require(
-            balanceOf[msg.sender] >= value,
-            "Insufficient balance"
-        );
+        require(balanceOf[msg.sender] >= value, "Insufficient balance");
 
-        unchecked {
-            balanceOf[msg.sender] -= value;
-        }
-
+        balanceOf[msg.sender] -= value;
         balanceOf[to] += value;
 
         emit Transfer(msg.sender, to, value);
@@ -252,30 +187,22 @@ contract DABELA {
         external returns (bool)
     {
         allowance[msg.sender][spender] = value;
-
         emit Approval(msg.sender, spender, value);
         return true;
     }
 
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool) {
+    function transferFrom(address from, address to, uint256 value)
+        external returns (bool)
+    {
         require(to != address(0), "Invalid recipient");
-        require(
-            balanceOf[from] >= value,
-            "Insufficient balance"
-        );
+        require(balanceOf[from] >= value, "Insufficient balance");
 
         uint256 allowed = allowance[from][msg.sender];
 
-        require(allowed >= value, "Insufficient allowance");
+        require(allowed >= value, "Allowance exceeded");
 
         if (allowed != type(uint256).max) {
-            unchecked {
-                allowance[from][msg.sender] = allowed - value;
-            }
+            allowance[from][msg.sender] = allowed - value;
 
             emit Approval(
                 from,
@@ -284,261 +211,199 @@ contract DABELA {
             );
         }
 
-        unchecked {
-            balanceOf[from] -= value;
-        }
-
+        balanceOf[from] -= value;
         balanceOf[to] += value;
 
         emit Transfer(from, to, value);
         return true;
     }
-}
-`;
-
-const $ = id => document.getElementById(id);
+}`;
 
 let provider;
 let signer;
 let account;
 
-function setStatus(msg, cls = "") {
-  $("status").textContent = msg;
-  $("status").className = "status " + cls;
-}
+const $ = id => document.getElementById(id);
 
-function validAddress(address) {
-  return window.ethers && ethers.isAddress(address);
-}
+const setStatus = (message, kind = "") => {
+  $("status").textContent = message;
+  $("status").className = "status " + kind;
+};
 
 async function connect() {
+  if (!window.ethereum) {
+    throw new Error(
+      "MetaMask provider not detected. Open this page inside MetaMask's browser."
+    );
+  }
+
+  provider = new ethers.BrowserProvider(window.ethereum);
+
+  await provider.send("eth_requestAccounts", []);
+
+  signer = await provider.getSigner();
+  account = await signer.getAddress();
+
+  $("recipient").value = account;
+
+  const network = await provider.getNetwork();
+
+  $("walletStatus").textContent =
+    `Connected: ${account}\nChain ID: ${network.chainId}`;
+
+  $("deployBtn").disabled = network.chainId !== SEPOLIA;
+
+  if (network.chainId === SEPOLIA) {
+    setStatus("Wallet connected to Sepolia. Ready to compile.");
+  } else {
+    setStatus(
+      "Wallet connected, but not on Sepolia. Tap Switch to Sepolia.",
+      "bad"
+    );
+  }
+}
+
+$("connectBtn").addEventListener("click", async () => {
+  try {
+    await connect();
+  } catch (e) {
+    setStatus(e.message || String(e), "bad");
+  }
+});
+
+$("switchBtn").addEventListener("click", async () => {
   try {
     if (!window.ethereum) {
-      setStatus(
-        "MetaMask provider not detected. Open this page inside MetaMask's built-in browser.",
-        "bad"
-      );
-      return;
+      throw new Error("Open this page in MetaMask's browser.");
     }
 
-    provider = new ethers.BrowserProvider(window.ethereum);
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: "0xaa36a7" }]
+    });
 
-    const accounts = await provider.send(
-      "eth_requestAccounts",
-      []
-    );
-
-    if (!accounts.length) {
-      throw new Error("No wallet account was returned.");
-    }
-
-    account = ethers.getAddress(accounts[0]);
-    signer = await provider.getSigner();
-
-    $("recipient").value = account;
-    $("walletAddress").textContent = account;
-    $("walletState").textContent = "Connected";
-    $("connect").textContent = "Wallet connected";
-    $("deploy").disabled = false;
-
-    await checkNetwork();
+    await connect();
 
   } catch (e) {
     setStatus(e.message || String(e), "bad");
   }
+});
+
+if (window.ethereum) {
+  window.ethereum.on?.("chainChanged", () => location.reload());
+  window.ethereum.on?.("accountsChanged", () => location.reload());
 }
 
-async function checkNetwork() {
-  if (!provider) return false;
+$("deployBtn").addEventListener("click", async () => {
+  $("deployBtn").disabled = true;
+  $("result").hidden = true;
 
-  const net = await provider.getNetwork();
-  const ok = net.chainId === 11155111n;
-
-  $("switch").disabled = ok;
-
-  if (!ok) {
-    setStatus(
-      "Wrong network. Tap Switch to Ethereum Sepolia.",
-      "bad"
-    );
-  } else {
-    setStatus(
-      "Wallet connected to Ethereum Sepolia. Ready to deploy."
-    );
-  }
-
-  return ok;
-}
-
-async function switchNetwork() {
   try {
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: CHAIN_ID }]
+    if (!signer) await connect();
+
+    const network = await provider.getNetwork();
+
+    if (network.chainId !== SEPOLIA) {
+      throw new Error(
+        "Switch MetaMask to Ethereum Sepolia first."
+      );
+    }
+
+    const recipient = ethers.getAddress(
+      $("recipient").value.trim()
+    );
+
+    if (recipient === ethers.ZeroAddress) {
+      throw new Error(
+        "Recipient cannot be the zero address."
+      );
+    }
+
+    setStatus(
+      "Starting Solidity compiler in a background worker…"
+    );
+
+    const worker = new Worker(
+      "./compiler-worker.js",
+      { type: "module" }
+    );
+
+    const compiled = await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        worker.terminate();
+        reject(new Error(
+          "Compiler timed out. Reload and try again."
+        ));
+      }, 120000);
+
+      worker.onmessage = e => {
+        clearTimeout(timeout);
+        worker.terminate();
+
+        if (e.data.ok) {
+          resolve(e.data);
+        } else {
+          reject(new Error(e.data.error));
+        }
+      };
+
+      worker.onerror = e => {
+        clearTimeout(timeout);
+        worker.terminate();
+
+        reject(new Error(
+          "Compiler worker failed to load. " +
+          (e.message || "")
+        ));
+      };
+
+      worker.postMessage({ source });
     });
 
-    await checkNetwork();
-
-  } catch (e) {
-    if (e.code === 4902) {
-      setStatus(
-        "Sepolia is not available in this wallet. Add Ethereum Sepolia in MetaMask first.",
-        "bad"
-      );
-    } else {
-      setStatus(e.message || String(e), "bad");
-    }
-  }
-}
-
-function compile() {
-  if (!window.solc || typeof solc.compile !== "function") {
-    throw new Error(
-      "Solidity compiler did not load. Check your internet connection and reload this page."
-    );
-  }
-
-  const input = {
-    language: "Solidity",
-    sources: {
-      "DABELA.sol": {
-        content: source
-      }
-    },
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      },
-      outputSelection: {
-        "*": {
-          "*": ["abi", "evm.bytecode.object"]
-        }
-      }
-    }
-  };
-
-  const output = JSON.parse(
-    solc.compile(JSON.stringify(input))
-  );
-
-  const errors = (output.errors || []).filter(
-    x => x.severity === "error"
-  );
-
-  if (errors.length) {
-    throw new Error(
-      errors.map(x => x.formattedMessage).join("\n")
-    );
-  }
-
-  const contract = output.contracts["DABELA.sol"]["DABELA"];
-
-  if (!contract.evm.bytecode.object) {
-    throw new Error("Compiler returned empty deployment bytecode.");
-  }
-
-  return contract;
-}
-
-async function deploy() {
-  $("deploy").disabled = true;
-
-  try {
-    if (!signer) {
-      throw new Error("Connect MetaMask first.");
-    }
-
-    if (!(await checkNetwork())) {
-      throw new Error("Switch to Ethereum Sepolia first.");
-    }
-
-    const recipient = $("recipient").value.trim();
-
-    if (!validAddress(recipient)) {
-      throw new Error(
-        "Recipient must be a valid Ethereum address beginning with 0x."
-      );
-    }
-
-    setStatus("Compiling DABELA locally in your browser…");
-
-    const artifact = compile();
-
     setStatus(
-      "Compilation successful. Preparing deployment transaction…"
+      `Compiled successfully (${compiled.version}). Preparing deployment…`,
+      "good"
     );
 
     const factory = new ethers.ContractFactory(
-      artifact.abi,
-      "0x" + artifact.evm.bytecode.object,
+      compiled.abi,
+      compiled.bytecode,
       signer
     );
 
-    const contract = await factory.deploy(
-      ethers.getAddress(recipient)
-    );
+    const contract = await factory.deploy(recipient);
 
     setStatus(
-      "Transaction submitted. Confirm it in MetaMask and wait for Sepolia confirmation…"
+      "Deployment transaction submitted. Confirm it in MetaMask and wait for confirmation."
     );
-
-    const tx = contract.deploymentTransaction();
-
-    if (tx) {
-      setStatus(
-        "Transaction submitted:\n" +
-        tx.hash +
-        "\nWaiting for confirmation…"
-      );
-    }
 
     await contract.waitForDeployment();
 
     const address = await contract.getAddress();
 
+    $("result").hidden = false;
+
+    $("result").innerHTML =
+      `Deployed successfully.\n` +
+      `Contract: <a target="_blank" rel="noopener" href="https://sepolia.etherscan.io/address/${address}">${address}</a>\n` +
+      `<a target="_blank" rel="noopener" href="https://sepolia.etherscan.io/tx/${contract.deploymentTransaction().hash}">View deployment transaction</a>`;
+
     setStatus(
-      "DABELA deployed successfully!\n\n" +
-      "Contract: " + address +
-      "\nTransaction: " + (tx ? tx.hash : "") +
-      "\n\nView contract: https://sepolia.etherscan.io/address/" +
-      address,
+      "DABELA is deployed on Sepolia.",
       "good"
     );
 
   } catch (e) {
-    let msg =
-      e.shortMessage ||
-      e.reason ||
-      e.message ||
-      String(e);
-
-    if (e.code === 4001) {
-      msg = "Transaction rejected in MetaMask.";
-    }
-
-    setStatus("Deployment failed:\n" + msg, "bad");
+    setStatus(
+      e.shortMessage || e.message || String(e),
+      "bad"
+    );
 
   } finally {
-    $("deploy").disabled = !signer;
+    $("deployBtn").disabled = false;
   }
-}
-
-$("connect").addEventListener("click", connect);
-$("switch").addEventListener("click", switchNetwork);
-$("deploy").addEventListener("click", deploy);
-
-if (window.ethereum) {
-  window.ethereum.on?.(
-    "accountsChanged",
-    () => location.reload()
-  );
-
-  window.ethereum.on?.(
-    "chainChanged",
-    () => location.reload()
-  );
-}
+});
 </script>
+
 </body>
 </html>
